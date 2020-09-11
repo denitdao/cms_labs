@@ -1,0 +1,33 @@
+@import url("../fonts/google/stylesheet.css");
+body {
+    background-color: #F6F8F9;
+    font-family: Google Sans, sans-serif !important;
+}
+h1, h2, h3, h4, h5, h6, span, input {
+    font-family: Google Sans, sans-serif !important;
+}
+p {
+    font-size: 18px;
+}
+.my-post-content {
+    padding: 40px 28px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.mdl-navigation__link {
+    font-size: 18px;
+    opacity: 0.95;
+}
+.mdl-layout-title {
+    font-size: 24px;
+}
+.mdl-grid {
+    min-height: 90%;
+}
+.mdl-cell {
+    border-radius: 8px;
+}
+.my-nav-link {
+    text-decoration: none;
+    cursor: pointer;
+}
