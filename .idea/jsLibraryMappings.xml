@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{jquery, material, material.blue-indigo, material.blue_grey-amber}" />
+    <file url="PROJECT" libraries="{autosize, jquery, material, material.blue-indigo, material.blue_grey-amber, quill, quill.snow}" />
   </component>
 </project>

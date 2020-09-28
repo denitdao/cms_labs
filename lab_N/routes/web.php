@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PageResource;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,13 +14,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::resource('page', PageResource::class);
 
-Route::get('/', function () {
-    return view('welcome');
-});
 //Route::get('/home/{lang?}', [PageController::class, 'show']);
 
-Route::get('/page/{page_code}/{lang?}', [PageController::class, 'show']);
+Route::get('/{page_code}/{lang?}', [PageController::class, 'show'])->name('pages');
 
 /*Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia\Inertia::render('Dashboard');

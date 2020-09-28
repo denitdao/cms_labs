@@ -134,5 +134,8 @@
     <orderEntry type="library" name="material.blue_grey-amber" level="application" />
     <orderEntry type="library" name="material" level="application" />
     <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="quill.snow" level="application" />
+    <orderEntry type="library" name="quill" level="application" />
+    <orderEntry type="library" name="autosize" level="application" />
   </component>
 </module>
