@@ -1,6 +1,7 @@
 $(document).ready(function (){
     var save_button = $('#save');
     var snackbar_container = document.querySelector('#snackbar');
+
     let id = document.getElementById('code').value;
     let input_code = document.getElementById('code');
     let input_caption_ua = document.getElementById('caption_ua');
@@ -11,6 +12,16 @@ $(document).ready(function (){
     let editor_content_en = document.getElementById('editor_content_en').children[0];
     let input_parent_code = document.getElementById('parent_code');
     let input_order_num = document.getElementById('order_num');
+    var page_photo_base64 = null;
+
+    $('#page_photo').on('change', function() {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            $('#image_preview_container').attr('src', e.target.result);
+            page_photo_base64 = e.target.result;
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
 
     save_button.on("click", function(event){
         console.log('Updating:');
@@ -23,6 +34,7 @@ $(document).ready(function (){
         console.log(editor_content_en.innerHTML);
         console.log(input_parent_code.value);
         console.log(input_order_num.value);
+        console.log(page_photo_base64);
 
         $.ajax({
             type: "PUT",
@@ -36,7 +48,8 @@ $(document).ready(function (){
                 content_ua: editor_content_ua.innerHTML,
                 content_en: editor_content_en.innerHTML,
                 parent_code: input_parent_code.value,
-                order_num: input_order_num.value
+                order_num: input_order_num.value,
+                page_photo: page_photo_base64
             }
         }).done(function (data) {
             let info;

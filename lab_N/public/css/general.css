@@ -27,6 +27,17 @@ img {
     min-height: calc(90% + 16px);
 }
 
+.my-search {
+    position: unset;
+}
+
+.my-floating-button {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 10;
+}
+
 .mdl-cell {
     border-radius: 8px;
 }
@@ -48,6 +59,9 @@ img {
     background-size: cover;
 }
 
+.my-image-preview {
+    max-width: 100% !important;
+}
 /*Admin*/
 
 .mdl-textfield--full-width {

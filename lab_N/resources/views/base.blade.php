@@ -29,7 +29,7 @@
             <div class="mdl-layout-spacer"></div>
             <!-- Search -->
             <form action="#">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable my-search">
                     <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
                         <i class="material-icons">search</i>
                     </label>
@@ -41,8 +41,6 @@
             </form>
             <!-- Navigation -->
             <nav class="mdl-navigation mdl-layout--large-screen-only">
-                <a class="mdl-navigation__link" href="/example-post">{{ $lang == 'ua' ? 'Приклад' : 'Example post' }}</a>
-                <a class="mdl-navigation__link" href="/page">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a>
                 <button id="demo-menu-lower-right"
                         class="mdl-button mdl-js-button mdl-button--icon">
                     <i class="material-icons">more_vert</i>
@@ -54,6 +52,7 @@
                     @else
                         <li class="mdl-menu__item"><a class="mdl-menu__item" href="{{ $path }}/en">English</a></li>
                     @endif
+                    <li class="mdl-menu__item"><a class="mdl-menu__item" href="/page">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a></li>
                     <li class="mdl-menu__item"><a class="mdl-menu__item" href="{{ route('login') }}">{{ $lang == 'ua' ? 'Увійти' : 'Login' }}</a></li>
                 </ul>
             </nav>
@@ -63,9 +62,8 @@
     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
         <span class="mdl-layout-title">{{ $lang == 'ua' ? 'Меню' : 'Menu' }}</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/example-post">{{ $lang == 'ua' ? 'Приклад' : 'Example post' }}</a>
             <a class="mdl-navigation__link" href="/page">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a>
-        @if($lang == 'en')
+            @if($lang == 'en')
                 <a class="mdl-navigation__link" href="{{ $path }}">Українська</a>
             @else
                 <a class="mdl-navigation__link" href="{{ $path }}/en">English</a>

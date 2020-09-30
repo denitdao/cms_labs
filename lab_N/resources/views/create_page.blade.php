@@ -19,6 +19,13 @@
         <div class="container">
             <h3>Створення сторінки</h3>
 
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <h5>Зображення для сторінки</h5>
+                <img class="my-image-preview" id="image_preview_container" src="{{ asset('storage/images/'.($item->page_photo_path ?? 'default.png')) }}"
+                     alt="preview image">
+                <input class="mdl-textfield__input" type="file" id="page_photo">
+            </div>
+
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-textfield--full-width">
                 <input class="mdl-textfield__input" type="text" id="caption_ua" maxlength="160">
                 <label class="mdl-textfield__label" for="caption_ua">Заголовок Українською</label>
@@ -64,7 +71,8 @@
                 <label class="mdl-textfield__label" for="parent_code">Код сторінки контейнера</label>
             </div>
             <br>
-            <button id="create" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Create</button>
+            <button id="create" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Create</button>
+            <a href="{{request()->headers->get('referer')}}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Cancel</a>
             <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
                 <div class="mdl-snackbar__text"></div>
                 <button class="mdl-snackbar__action" type="button"></button>

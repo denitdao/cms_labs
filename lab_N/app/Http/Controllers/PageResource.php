@@ -26,11 +26,7 @@ class PageResource extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function create() {
-        $data = [
-            'lang' => 'ua',
-            'code' => 'page/create'
-        ];
-        return view('create_page', $data);
+        return view('create_page', ['lang' => 'ua', 'code' => 'page/create']);
     }
 
     /**
@@ -43,38 +39,15 @@ class PageResource extends Controller
         if (!$request->ajax())
             return response()->json(''); // no input
 
-        $validator = Validator::make($request->all(), [
-            'parent_code' => 'bail|required|exists:pages,code',
-            'code' => 'bail|required|unique:pages|max:100',
-            'caption_ua' => 'bail|required|max:100',
-            'caption_en' => 'bail|required|max:100',
-            'intro_ua' => 'bail|nullable|max:400',
-            'intro_en' => 'bail|nullable|max:400',
-            'content_ua' => 'bail|nullable|max:5000',
-            'content_en' => 'bail|nullable|max:5000',
-            'order_num' => 'bail|nullable|integer'
-        ]);
+        $validator = $this->validateToCreate($request->all());
 
         if ($validator->fails()) {
-            debug([$validator->errors()->all()]);
             $data = [
                 'message' => $validator->errors()->all(),
                 'code' => 'error'
             ];
         } else {
-            $container = Page::getPage($request->parent_code);
-            $page = $container->sub_pages()->create([
-                'code' => $request->code,
-                'caption_ua' => $request->caption_ua,
-                'caption_en' => $request->caption_en,
-                'intro_ua' => $request->intro_ua,
-                'intro_en' => $request->intro_en,
-                'content_ua' => $request->content_ua,
-                'content_en' => $request->content_en,
-                'order_num' => $request->order_num
-            ]);
-    //        debug($page);
-            $page->save();
+            Page::addPage($request->all());
             $data = [
                 'message' => 'Page created successfully',
                 'code' => $request->code
@@ -100,9 +73,7 @@ class PageResource extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit($id) {
-        //
-        $data = Page::render($id);
-        return view('edit_page', $data);
+        return view('edit_page', Page::render($id));
     }
 
     /**
@@ -116,38 +87,15 @@ class PageResource extends Controller
         if (!$request->ajax())
             return response()->json(''); // no input
 
-        $validator = Validator::make($request->all(), [
-            'parent_code' => 'bail|required|exists:pages,code',
-            'code' => 'bail|required|exists:pages|max:100',
-            'caption_ua' => 'bail|required|max:100',
-            'caption_en' => 'bail|required|max:100',
-            'intro_ua' => 'bail|nullable|max:400',
-            'intro_en' => 'bail|nullable|max:400',
-            'content_ua' => 'bail|nullable|max:5000',
-            'content_en' => 'bail|nullable|max:5000',
-            'order_num' => 'bail|nullable|integer'
-        ]);
+        $validator = $this->validateToUpdate($request->all());
 
         if ($validator->fails()) {
-            debug([$validator->errors()->all()]);
             $data = [
                 'message' => $validator->errors()->all(),
                 'code' => 'error'
             ];
         } else {
-            $page = Page::getPage($id);
-            debug(Page::getPage($request->parent_code)->id);
-            $page->update([
-                'code' => $request->code,
-                'caption_ua' => $request->caption_ua,
-                'caption_en' => $request->caption_en,
-                'intro_ua' => $request->intro_ua,
-                'intro_en' => $request->intro_en,
-                'content_ua' => $request->content_ua,
-                'content_en' => $request->content_en,
-                'order_num' => $request->order_num,
-                'parent_id' => Page::getPage($request->parent_code)->id
-            ]);
+            Page::updatePage($request->all(), $id);
             $data = [
                 'message' => 'Page updated successfully',
                 'code' => $request->code
@@ -163,7 +111,39 @@ class PageResource extends Controller
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
     public function destroy($id) {
-        Page::getPage($id)->delete();
+        Page::deletePage($id);
         return redirect()->route('page.index');
+    }
+
+//    METHODS FOR VALIDATION
+
+    private function validateToCreate($input) {
+        return Validator::make($input, [
+            'code' => 'bail|required|unique:pages|max:100',
+            'parent_code' => 'bail|required|exists:pages,code',
+            'caption_ua' => 'bail|required|max:100',
+            'caption_en' => 'bail|required|max:100',
+            'intro_ua' => 'bail|nullable|max:400',
+            'intro_en' => 'bail|nullable|max:400',
+            'content_ua' => 'bail|nullable|max:65534',
+            'content_en' => 'bail|nullable|max:65534',
+            'order_num' => 'bail|nullable|integer',
+            //'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
+        ]);
+    }
+
+    private function validateToUpdate($input) {
+        return Validator::make($input, [
+            'code' => 'bail|required|exists:pages|max:100',
+            'parent_code' => 'bail|required|exists:pages,code',
+            'caption_ua' => 'bail|required|max:100',
+            'caption_en' => 'bail|required|max:100',
+            'intro_ua' => 'bail|nullable|max:400',
+            'intro_en' => 'bail|nullable|max:400',
+            'content_ua' => 'bail|nullable|max:65534',
+            'content_en' => 'bail|nullable|max:65534',
+            'order_num' => 'bail|nullable|integer',
+            //'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
+        ]);
     }
 }

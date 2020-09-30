@@ -14,9 +14,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::resource('page', PageResource::class);
 
-//Route::get('/home/{lang?}', [PageController::class, 'show']);
+Route::get('/', function(){
+    return redirect()->route('pages', ['page_code' => 'home']);
+});
+
+Route::resource('page', PageResource::class);
 
 Route::get('/{page_code}/{lang?}', [PageController::class, 'show'])->name('pages');
 
