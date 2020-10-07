@@ -53,7 +53,7 @@
                         <li class="mdl-menu__item"><a class="mdl-menu__item" href="{{ $path }}/en">English</a></li>
                     @endif
                     <li class="mdl-menu__item"><a class="mdl-menu__item" href="/page">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a></li>
-                    <li class="mdl-menu__item"><a class="mdl-menu__item" href="{{ route('login') }}">{{ $lang == 'ua' ? 'Увійти' : 'Login' }}</a></li>
+                    <li class="mdl-menu__item"><a class="mdl-menu__item" href="#{{-- route('login') --}}">{{ $lang == 'ua' ? 'Увійти' : 'Login' }}</a></li>
                 </ul>
             </nav>
         </div>
@@ -68,7 +68,7 @@
             @else
                 <a class="mdl-navigation__link" href="{{ $path }}/en">English</a>
             @endif
-            <a class="mdl-list__item mdl-navigation__link my-nav-link" href="{{ route('login') }}">
+            <a class="mdl-list__item mdl-navigation__link my-nav-link" href="#{{-- route('login') --}}">
                 <span class="mdl-list__item-primary-content">
                     <i class="material-icons mdl-list__item-icon">person</i>
                     {{ $lang == 'ua' ? 'Увійти' : 'Login' }}
@@ -93,7 +93,7 @@
             <div class="mdl-mini-footer__right-section">
                 <ul class="mdl-mini-footer__link-list">
                     <li><a href="/home">{{ $lang == 'ua' ? 'Головна' : 'Home' }}</a></li>
-                    <li><a href="{{ route('login') }}">{{ $lang == 'ua' ? 'Увійти' : 'Login' }}</a></li>
+                    <li><a href="#{{-- route('login') --}}">{{ $lang == 'ua' ? 'Увійти' : 'Login' }}</a></li>
                 </ul>
             </div>
         </footer>

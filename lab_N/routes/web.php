@@ -22,7 +22,3 @@ Route::get('/', function(){
 Route::resource('page', PageResource::class);
 
 Route::get('/{page_code}/{lang?}', [PageController::class, 'show'])->name('pages');
-
-/*Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia\Inertia::render('Dashboard');
-})->name('dashboard');*/
