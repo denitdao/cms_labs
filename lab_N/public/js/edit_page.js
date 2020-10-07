@@ -69,6 +69,7 @@ $(document).ready(function (){
                 }
             }
             snackbar_container.MaterialSnackbar.showSnackbar(info);
+            setTimeout(() => window.location.href = `/page/${data.code}/edit`, 3000);
         });
     });
 

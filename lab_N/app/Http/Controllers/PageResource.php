@@ -134,7 +134,7 @@ class PageResource extends Controller
 
     private function validateToUpdate($input) {
         return Validator::make($input, [
-            'code' => 'bail|required|exists:pages|max:100',
+            //'code' => 'bail|required|exists:pages|max:100',
             'parent_code' => 'bail|required|exists:pages,code',
             'caption_ua' => 'bail|required|max:100',
             'caption_en' => 'bail|required|max:100',
