@@ -15,7 +15,7 @@ class PageResource extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index() {
-        $data = Page::renderAll();
+        $data = Page::renderAdmin();
         $data['code'] = 'page/create';
         return view('index_page', $data);
     }
@@ -128,13 +128,15 @@ class PageResource extends Controller
             'content_ua' => 'bail|nullable|max:65534',
             'content_en' => 'bail|nullable|max:65534',
             'order_num' => 'bail|nullable|integer',
-            //'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
+            'page_type' => 'bail|required|in:container,publication',
+            'view_type' => 'bail|required|in:list,tiles'
+//            'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
         ]);
     }
 
     private function validateToUpdate($input) {
         return Validator::make($input, [
-            //'code' => 'bail|required|exists:pages|max:100',
+//            'code' => 'bail|required|exists:pages|max:100',
             'parent_code' => 'bail|required|exists:pages,code',
             'caption_ua' => 'bail|required|max:100',
             'caption_en' => 'bail|required|max:100',
@@ -143,7 +145,9 @@ class PageResource extends Controller
             'content_ua' => 'bail|nullable|max:65534',
             'content_en' => 'bail|nullable|max:65534',
             'order_num' => 'bail|nullable|integer',
-            //'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
+            'page_type' => 'bail|required|in:container,publication',
+            'view_type' => 'bail|required|in:list,tiles'
+//            'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
         ]);
     }
 }

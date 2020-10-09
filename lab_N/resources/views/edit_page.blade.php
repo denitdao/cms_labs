@@ -1,4 +1,4 @@
-@extends('base', ['path' => "/page/$code/edit", $lang])
+@extends('admin_base', ['path' => "/page/$code/edit", $lang])
 
 @section('title', 'Редагування сторінки')
 
@@ -17,6 +17,28 @@
     <div class="mdl-cell mdl-cell--2-offset-desktop mdl-cell--8-col mdl-color-text--grey-800 mdl-shadow--2dp mdl-color--white my-post-content">
         <div class="container">
             <h3>Редагування сторінки</h3>
+
+            <div id="page_settings">
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="publication">
+                    <input type="radio" id="publication" class="mdl-radio__button" name="page_type" value="publication" {{ ($view_type) ? "" : "checked" }}>
+                    <span class="mdl-radio__label">Publication</span>
+                </label>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="container">
+                    <input type="radio" id="container" class="mdl-radio__button" name="page_type" value="container" {{ ($view_type) ? "checked" : "" }}>
+                    <span class="mdl-radio__label">Container</span>
+                </label>
+            </div>
+
+            <div id="container_settings">
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="list">
+                    <input type="radio" id="list" class="mdl-radio__button" name="view_type" value="list" {{ ($view_type == 'list') ? "checked" : "" }} {{ ($view_type) ? "" : "checked" }}>
+                    <span class="mdl-radio__label">List</span>
+                </label>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="tiles">
+                    <input type="radio" id="tiles" class="mdl-radio__button" name="view_type" value="tiles" {{ ($view_type == 'tiles') ? "checked" : "" }}>
+                    <span class="mdl-radio__label">Tiles</span>
+                </label>
+            </div>
 
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <h5>Зображення для сторінки</h5>

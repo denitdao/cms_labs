@@ -1,4 +1,5 @@
 $(document).ready(function (){
+    if($('[name = page_type]:checked').val() !== 'container') $('#container_settings').hide();
     var save_button = $('#save');
     var snackbar_container = document.querySelector('#snackbar');
 
@@ -14,6 +15,12 @@ $(document).ready(function (){
     let input_order_num = document.getElementById('order_num');
     var page_photo_base64 = null;
 
+    $('#container').on('change', function() {
+        $('#container_settings').show();
+    });
+    $('#publication').on('change', function() {
+        $('#container_settings').hide();
+    });
     $('#page_photo').on('change', function() {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -24,7 +31,12 @@ $(document).ready(function (){
     });
 
     save_button.on("click", function(event){
+        let page_type = $('[name = page_type]:checked');
+        let view_type = $('[name = view_type]:checked');
+
         console.log('Updating:');
+        console.log(page_type.val());
+        console.log(view_type.val());
         console.log(input_code.value);
         console.log(input_caption_ua.value);
         console.log(input_caption_en.value);
@@ -40,6 +52,8 @@ $(document).ready(function (){
             type: "PUT",
             url: '/page/' + id,
             data: {
+                page_type: page_type.val(),
+                view_type: view_type.val(),
                 code: input_code.value,
                 caption_ua: input_caption_ua.value,
                 caption_en: input_caption_en.value,
@@ -61,15 +75,17 @@ $(document).ready(function (){
                         window.location.href = '/' + data.code;
                     },
                     actionText: 'View',
+
                 }
+                snackbar_container.MaterialSnackbar.showSnackbar(info);
+                setTimeout(() => window.location.href = `/page/${data.code}/edit`, 3000);
             } else {
                 info = {
                     message: data.message,
                     timeout: 5000
                 }
+                snackbar_container.MaterialSnackbar.showSnackbar(info);
             }
-            snackbar_container.MaterialSnackbar.showSnackbar(info);
-            setTimeout(() => window.location.href = `/page/${data.code}/edit`, 3000);
         });
     });
 

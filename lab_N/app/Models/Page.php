@@ -35,7 +35,8 @@ class Page extends Model
         return $data;
     }
 
-    public static function renderAll(){
+    public static function renderAdmin(){
+        $data['containers'] = Page::getAllContainers();
         $data['items'] = Page::getAllPosts(); // could use getAllPages()
         $data['lang'] = 'ua';
         return $data;
@@ -59,6 +60,11 @@ class Page extends Model
         return $page;
     }
 
+    public static function getAllContainers(){
+        $page = Page::whereNotNull('view_type')->get();
+        return $page;
+    }
+
     public static function getAllPosts(){
         $page = Page::whereNull('view_type')->get();
         return $page;
@@ -67,7 +73,7 @@ class Page extends Model
 //    METHODS FOR DB MANIPULATING
 
     public static function addPage($array){
-        $container = Page::getPage($array['parent_code']);
+        $container = Page::firstWhere('code', $array['parent_code']);
         $page = $container->sub_pages()->create([
             'code' => $array['code'],
             'caption_ua' => $array['caption_ua'],
@@ -82,12 +88,15 @@ class Page extends Model
             $name = Page::saveImage("$page->id-".time(), $array['page_photo']);
             $page->page_photo_path = $name;
         }
+        if ($array['page_type'] == 'container'){
+            $page->view_type = $array['view_type'];
+        }
         debug('saved page');
         $page->save();
     }
 
     public static function updatePage($array, $current_code) {
-        $page = Page::getPage($current_code);
+        $page = Page::firstWhere('code', $current_code);
         $page->update([
             'code' => $array['code'],
             'caption_ua' => $array['caption_ua'],
@@ -97,7 +106,7 @@ class Page extends Model
             'content_ua' => $array['content_ua'],
             'content_en' => $array['content_en'],
             'order_num' => $array['order_num'],
-            'parent_id' => Page::getPage($array['parent_code'])->id
+            'parent_id' => Page::firstWhere('code', $array['parent_code'])->id
         ]);
         if (isset($array['page_photo'])) {
             if(isset($page->page_photo_path))
@@ -105,11 +114,16 @@ class Page extends Model
             $name = Page::saveImage("$page->id-".time(), $array['page_photo']);
             $page->update(['page_photo_path' => $name]);
         }
+        if ($array['page_type'] == 'container'){
+            $page->update(['view_type' =>  $array['view_type']]);
+        } else {
+            $page->update(['view_type' => null]);
+        }
         debug('updated page');
     }
 
     public static function deletePage($code){
-        Page::getPage($code)->delete();
+        Page::firstWhere('code', $code)->delete();
     }
 
     public static function saveImage($name, $base64){

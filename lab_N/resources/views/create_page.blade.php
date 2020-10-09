@@ -1,4 +1,4 @@
-@extends('base', ['path' => "/page/create", $lang])
+@extends('admin_base', ['path' => "/page/create", $lang])
 
 @section('title', 'Створення сторінки')
 
@@ -11,13 +11,34 @@
 
 @section('stylesheets')
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-
 @endsection
 
 @section('content')
     <div class="mdl-cell mdl-cell--2-offset-desktop mdl-cell--8-col mdl-color-text--grey-800 mdl-shadow--2dp mdl-color--white my-post-content">
         <div class="container">
             <h3>Створення сторінки</h3>
+
+            <div id="page_settings">
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="publication">
+                    <input type="radio" id="publication" class="mdl-radio__button" name="page_type" value="publication" checked>
+                    <span class="mdl-radio__label">Publication</span>
+                </label>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="container">
+                    <input type="radio" id="container" class="mdl-radio__button" name="page_type" value="container">
+                    <span class="mdl-radio__label">Container</span>
+                </label>
+            </div>
+
+            <div id="container_settings">
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="list">
+                    <input type="radio" id="list" class="mdl-radio__button" name="view_type" value="list" checked>
+                    <span class="mdl-radio__label">List</span>
+                </label>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="tiles">
+                    <input type="radio" id="tiles" class="mdl-radio__button" name="view_type" value="tiles">
+                    <span class="mdl-radio__label">Tiles</span>
+                </label>
+            </div>
 
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <h5>Зображення для сторінки</h5>
