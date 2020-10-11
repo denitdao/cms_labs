@@ -14,6 +14,21 @@
 @endsection
 
 @section('content')
+    <div class="mdl-cell mdl-cell--2-offset-desktop mdl-cell--8-col mdl-color-text--grey-800">
+        @php
+            $parent = \App\Models\Page::find($parent_id);
+            $arrays = [];
+            while($parent_id != $id) {
+                array_push($arrays, ['code' => $parent->code, 'caption_ua' => $parent->caption_ua, 'caption_en' => $parent->caption_en]);
+                if($parent->parent_id == $parent->id) break;
+                $parent = \App\Models\Page::find($parent->parent_id);
+            }
+        @endphp
+        @foreach(array_reverse($arrays) as $array)
+            <a href="/page/{{ $lang == 'ua' ? $array['code'] : $array['code'].'/en' }}" class="mdl-button mdl-js-button mdl-button--primary">{{ $lang == 'ua' ? $array['caption_ua'] : $array['caption_en'] }}</a>
+            @if(!$loop->last)<span class="mdl-button--primary"> > </span>@endif
+        @endforeach
+    </div>
     <div class="mdl-cell mdl-cell--2-offset-desktop mdl-cell--8-col mdl-color-text--grey-800 mdl-shadow--2dp mdl-color--white my-post-content">
         <div class="container">
             <h3>Редагування сторінки</h3>
@@ -92,8 +107,8 @@
                 <label class="mdl-textfield__label" for="parent_code">Код сторінки контейнера</label>
             </div>
             <br>
-            <button id="save" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Save</button>
-            <a href="{{request()->headers->get('referer')}}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Cancel</a>
+            <button id="save" class="mdl-button mdl-js-button mdl-button--raised mdl-color--green">Save</button>
+            <a href="/page/{{ \App\Models\Page::find($parent_id)->code }}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Cancel</a>
             <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
                 <div class="mdl-snackbar__text"></div>
                 <button class="mdl-snackbar__action" type="button"></button>

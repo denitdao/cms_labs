@@ -92,7 +92,7 @@
                 <label class="mdl-textfield__label" for="parent_code">Код сторінки контейнера</label>
             </div>
             <br>
-            <button id="create" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Create</button>
+            <button id="create" class="mdl-button mdl-js-button mdl-button--raised mdl-color--green">Create</button>
             <a href="{{request()->headers->get('referer')}}" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Cancel</a>
             <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
                 <div class="mdl-snackbar__text"></div>

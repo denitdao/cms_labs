@@ -35,9 +35,10 @@ class Page extends Model
         return $data;
     }
 
-    public static function renderAdmin(){
-        $data['containers'] = Page::getAllContainers();
-        $data['items'] = Page::getAllPosts(); // could use getAllPages()
+    public static function renderAdmin($code){
+        $data = Page::firstWhere('code', $code);
+        $data['containers'] = Page::getAllContainers($code);
+        $data['items'] = Page::getAllPosts($code);
         $data['lang'] = 'ua';
         return $data;
     }
@@ -56,17 +57,28 @@ class Page extends Model
     }
 
     public static function getAllPages(){
-        $page = Page::all();
+        return Page::all();
+    }
+
+    public static function getAllContainers($code = null){
+        if(is_null($code))
+            $page = Page::whereNotNull('view_type')->get();
+        else{
+            $parent = Page::firstWhere('code', $code);
+            $page = Page::whereNotNull('view_type')
+                ->where('parent_id', '=', $parent->id)->get();
+        }
         return $page;
     }
 
-    public static function getAllContainers(){
-        $page = Page::whereNotNull('view_type')->get();
-        return $page;
-    }
-
-    public static function getAllPosts(){
-        $page = Page::whereNull('view_type')->get();
+    public static function getAllPosts($code = null){
+        if(is_null($code))
+            $page = Page::whereNull('view_type')->get();
+        else{
+            $parent = Page::firstWhere('code', $code);
+            $page = Page::whereNull('view_type')
+                ->where('parent_id', '=', $parent->id)->get();
+        }
         return $page;
     }
 

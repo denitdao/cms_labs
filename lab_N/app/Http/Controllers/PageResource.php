@@ -15,8 +15,8 @@ class PageResource extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index() {
-        $data = Page::renderAdmin();
-        $data['code'] = 'page/create';
+        $data = Page::renderAdmin('home'); // render home
+        //$data['code'] = 'page/create';
         return view('index_page', $data);
     }
 
@@ -63,7 +63,10 @@ class PageResource extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function show($id) {
-        return redirect()->route('pages', ['page_code' => $id]);
+        $data = Page::renderAdmin($id);
+        //$data['code'] = 'page/create';
+        return view('index_page', $data);
+        //return redirect()->route('pages', ['page_code' => $id]);
     }
 
     /**

@@ -21,4 +21,6 @@ Route::get('/', function(){
 
 Route::resource('page', PageResource::class);
 
+//Route::get('/page/{page_code}', [PageResource::class, 'index'])->name('page.index');
+
 Route::get('/{page_code}/{lang?}', [PageController::class, 'show'])->name('pages');
