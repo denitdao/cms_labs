@@ -16,7 +16,6 @@ class PageResource extends Controller
      */
     public function index() {
         $data = Page::renderAdmin('home'); // render home
-        //$data['code'] = 'page/create';
         return view('index_page', $data);
     }
 
@@ -60,13 +59,11 @@ class PageResource extends Controller
      * Display the specified resource.
      * GET
      * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function show($id) {
         $data = Page::renderAdmin($id);
-        //$data['code'] = 'page/create';
         return view('index_page', $data);
-        //return redirect()->route('pages', ['page_code' => $id]);
     }
 
     /**
@@ -132,7 +129,8 @@ class PageResource extends Controller
             'content_en' => 'bail|nullable|max:65534',
             'order_num' => 'bail|nullable|integer',
             'page_type' => 'bail|required|in:container,publication',
-            'view_type' => 'bail|required|in:list,tiles'
+            'view_type' => 'bail|required|in:list,tiles',
+            'order_type' => 'bail|required|in:order_num_asc,date_desc'
 //            'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
         ]);
     }
@@ -149,7 +147,8 @@ class PageResource extends Controller
             'content_en' => 'bail|nullable|max:65534',
             'order_num' => 'bail|nullable|integer',
             'page_type' => 'bail|required|in:container,publication',
-            'view_type' => 'bail|required|in:list,tiles'
+            'view_type' => 'bail|required|in:list,tiles',
+            'order_type' => 'bail|required|in:order_num_asc,date_desc'
 //            'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
         ]);
     }

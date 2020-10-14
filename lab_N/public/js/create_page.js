@@ -32,10 +32,12 @@ $(document).ready(function (){
     create_button.on("click", function(event){
         let page_type = $('[name = page_type]:checked');
         let view_type = $('[name = view_type]:checked');
+        let order_type = $('[name = order_type]:checked');
 
         console.log('Creating:');
         console.log(page_type.val());
         console.log(view_type.val());
+        console.log(order_type.val());
         console.log(input_code.value);
         console.log(input_caption_ua.value);
         console.log(input_caption_en.value);
@@ -53,6 +55,7 @@ $(document).ready(function (){
             data: {
                 page_type: page_type.val(),
                 view_type: view_type.val(),
+                order_type: order_type.val(),
                 code: input_code.value,
                 caption_ua: input_caption_ua.value,
                 caption_en: input_caption_en.value,

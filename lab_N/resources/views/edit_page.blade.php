@@ -53,6 +53,15 @@
                     <input type="radio" id="tiles" class="mdl-radio__button" name="view_type" value="tiles" {{ ($view_type == 'tiles') ? "checked" : "" }}>
                     <span class="mdl-radio__label">Tiles</span>
                 </label>
+                <br>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="date_desc">
+                    <input type="radio" id="date_desc" class="mdl-radio__button" name="order_type" value="date_desc" {{ ($order_type == 'date_desc') ? "checked" : "" }} {{ ($order_type) ? "" : "checked" }}>
+                    <span class="mdl-radio__label">Date</span>
+                </label>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="order_num_asc">
+                    <input type="radio" id="order_num_asc" class="mdl-radio__button" name="order_type" value="order_num_asc" {{ ($order_type == 'order_num_asc') ? "checked" : "" }}>
+                    <span class="mdl-radio__label">Order number</span>
+                </label>
             </div>
 
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">

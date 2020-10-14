@@ -52,7 +52,18 @@ class Page extends Model
         if(is_null($page->view_type)) { // this is a single post
             return $page;
         }
-        $page['items'] = $page->sub_pages()->where('id', '<>', $page->id)->get(); // get a container with it's posts
+        switch($page->order_type){
+            case 'order_num_asc':{
+                $page['items'] = $page->sub_pages()->where('id', '<>', $page->id)->orderBy('order_num', 'asc')->get(); // get a container with it's posts
+                break;
+            }
+            case 'date_desc':{
+                $page['items'] = $page->sub_pages()->where('id', '<>', $page->id)->orderBy('created_at', 'desc')->get(); // get a container with it's posts
+                break;
+            }
+            default:
+                $page['items'] = $page->sub_pages()->where('id', '<>', $page->id)->get(); // get a container with it's posts
+        }
         return $page;
     }
 
@@ -63,10 +74,20 @@ class Page extends Model
     public static function getAllContainers($code = null){
         if(is_null($code))
             $page = Page::whereNotNull('view_type')->get();
-        else{
+        else {
             $parent = Page::firstWhere('code', $code);
-            $page = Page::whereNotNull('view_type')
-                ->where('parent_id', '=', $parent->id)->get();
+            switch($parent->order_type){
+                case 'order_num_asc':{
+                    $page = $parent->sub_pages()->whereNotNull('view_type')->orderBy('order_num', 'asc')->get();
+                    break;
+                }
+                case 'date_desc':{
+                    $page = $parent->sub_pages()->whereNotNull('view_type')->orderBy('created_at', 'desc')->get();
+                    break;
+                }
+                default:
+                    $page = $parent->sub_pages()->whereNotNull('view_type')->get();
+            }
         }
         return $page;
     }
@@ -74,10 +95,20 @@ class Page extends Model
     public static function getAllPosts($code = null){
         if(is_null($code))
             $page = Page::whereNull('view_type')->get();
-        else{
+        else {
             $parent = Page::firstWhere('code', $code);
-            $page = Page::whereNull('view_type')
-                ->where('parent_id', '=', $parent->id)->get();
+            switch($parent->order_type){
+                case 'order_num_asc':{
+                    $page = $parent->sub_pages()->whereNull('view_type')->orderBy('order_num', 'asc')->get();
+                    break;
+                }
+                case 'date_desc':{
+                    $page = $parent->sub_pages()->whereNull('view_type')->orderBy('created_at', 'desc')->get();
+                    break;
+                }
+                default:
+                    $page = $parent->sub_pages()->whereNull('view_type')->get();
+            }
         }
         return $page;
     }
@@ -102,6 +133,7 @@ class Page extends Model
         }
         if ($array['page_type'] == 'container'){
             $page->view_type = $array['view_type'];
+            $page->order_type = $array['order_type'];
         }
         debug('saved page');
         $page->save();
@@ -127,9 +159,11 @@ class Page extends Model
             $page->update(['page_photo_path' => $name]);
         }
         if ($array['page_type'] == 'container'){
-            $page->update(['view_type' =>  $array['view_type']]);
+            $page->update(['view_type' => $array['view_type']]);
+            $page->update(['order_type' => $array['order_type']]);
         } else {
             $page->update(['view_type' => null]);
+            $page->update(['order_type' => null]);
         }
         debug('updated page');
     }
