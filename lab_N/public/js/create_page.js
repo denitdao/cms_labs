@@ -1,5 +1,4 @@
 $(document).ready(function (){
-    $('#container_settings').hide();
     var create_button = $('#create');
     var snackbar_container = document.querySelector('#snackbar');
 
@@ -14,12 +13,6 @@ $(document).ready(function (){
     let input_order_num = document.getElementById('order_num');
     var page_photo_base64 = null;
 
-    $('#container').on('change', function() {
-        $('#container_settings').show();
-    });
-    $('#publication').on('change', function() {
-        $('#container_settings').hide();
-    });
     $('#page_photo').on('change', function() {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -36,18 +29,8 @@ $(document).ready(function (){
 
         console.log('Creating:');
         console.log(page_type.val());
-        console.log(view_type.val());
-        console.log(order_type.val());
         console.log(input_code.value);
-        console.log(input_caption_ua.value);
-        console.log(input_caption_en.value);
-        console.log(textarea_intro_ua.value);
-        console.log(textarea_intro_en.value);
-        console.log(editor_content_ua.innerHTML);
-        console.log(editor_content_en.innerHTML);
         console.log(input_parent_code.value);
-        console.log(input_order_num.value);
-        console.log(page_photo_base64);
 
         $.ajax({
             type: "POST",
@@ -88,5 +71,4 @@ $(document).ready(function (){
         });
     });
 
-    autosize($('textarea'));
 });

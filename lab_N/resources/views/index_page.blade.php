@@ -47,7 +47,7 @@
                         @method('delete')
                         @csrf
                     </form>
-                    <a class="mdl-button mdl-button--colored mdl-color-text--blue-grey mdl-js-button mdl-js-ripple-effect" href="{{ $lang == 'ua' ? "/$container->code" : "/$container->code/en" }}">
+                    <a class="mdl-button mdl-button--colored mdl-color-text--blue-grey mdl-js-button mdl-js-ripple-effect" href="{{ $lang == 'ua' ? "/".($container->alias_of_page()->first()->code ?? $container->code) : "/".($container->alias_of_page()->first()->code ?? $container->code)."en" }}">
                         {{ $lang == 'ua' ? 'Дивитися' : 'Show' }}
                     </a>
                 </div>
@@ -76,7 +76,7 @@
                         @method('delete')
                         @csrf
                     </form>
-                    <a class="mdl-button mdl-button--colored mdl-color-text--blue-grey mdl-js-button mdl-js-ripple-effect" href="{{ $lang == 'ua' ? "/$item->code" : "/$item->code/en" }}">
+                    <a class="mdl-button mdl-button--colored mdl-color-text--blue-grey mdl-js-button mdl-js-ripple-effect" href="{{ $lang == 'ua' ? "/".($item->alias_of_page()->first()->code ?? $item->code) : "/".($item->alias_of_page()->first()->code ?? $item->code)."/en" }}">
                         {{ $lang == 'ua' ? 'Дивитися' : 'Show' }}
                     </a>
                 </div>

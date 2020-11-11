@@ -38,7 +38,7 @@ class AddColumnsToPagesTable extends Migration
             $table->dropColumn('order_type');
             $table->dropColumn('view_type');
             $table->dropColumn('order_num');
-            $table->dropColumn('parent_code');
+            $table->dropColumn('parent_id');
 
             $table->string('intro_en', 400)->change();
             $table->string('intro_ua', 400)->change();

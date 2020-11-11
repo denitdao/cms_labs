@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Exceptions\NonContainerAdminException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class Page extends Model
 {
@@ -13,7 +15,7 @@ class Page extends Model
 //    DB SETTINGS
 
     protected $fillable = [ 'code', 'caption_ua', 'caption_en', 'intro_ua', 'intro_en', 'content_ua', 'content_en',
-        'order_num', 'page_photo_path', 'order_type', 'view_type', 'parent_id' ];
+        'order_num', 'page_photo_path', 'order_type', 'view_type', 'parent_id', 'alias_of'];
 
     public function sub_pages() {
         return $this->hasMany('App\Models\Page', 'parent_id');
@@ -21,6 +23,14 @@ class Page extends Model
 
     public function parent_page() {
         return $this->belongsTo('App\Models\Page', 'parent_id');
+    }
+
+    public function aliases() {
+        return $this->hasMany('App\Models\Page', 'alias_of');
+    }
+
+    public function alias_of_page() {
+        return $this->belongsTo('App\Models\Page', 'alias_of');
     }
 
 //    METHODS FOR PAGE RENDERING
@@ -37,6 +47,8 @@ class Page extends Model
 
     public static function renderAdmin($code){
         $data = Page::firstWhere('code', $code);
+        if(is_null($data->view_type))
+            throw new NonContainerAdminException($code);
         $data['containers'] = Page::getAllContainers($code);
         $data['items'] = Page::getAllPosts($code);
         $data['lang'] = 'ua';
@@ -117,59 +129,118 @@ class Page extends Model
 
     public static function addPage($array){
         $container = Page::firstWhere('code', $array['parent_code']);
-        $page = $container->sub_pages()->create([
-            'code' => $array['code'],
-            'caption_ua' => $array['caption_ua'],
-            'caption_en' => $array['caption_en'],
-            'intro_ua' => $array['intro_ua'],
-            'intro_en' => $array['intro_en'],
-            'content_ua' => $array['content_ua'],
-            'content_en' => $array['content_en'],
-            'order_num' => $array['order_num'],
-        ]);
-        if (isset($array['page_photo'])) {
-            $name = Page::saveImage("$page->id-".time(), $array['page_photo']);
-            $page->page_photo_path = $name;
-        }
-        if ($array['page_type'] == 'container'){
-            $page->view_type = $array['view_type'];
-            $page->order_type = $array['order_type'];
+        if($array['page_type'] == 'alias'){
+            $aliased = Page::firstWhere('code', $array['code']);
+            $page = $container->sub_pages()->create([
+                'code' => 'alias-'.(round(microtime(true))).'-'.$array['code'],
+                'alias_of' => $aliased->id,
+                'caption_ua' => $array['caption_ua'] ?? $aliased->caption_ua,
+                'caption_en' => $array['caption_en'] ?? $aliased->caption_en,
+                'intro_ua' => $array['intro_ua'] ?? $aliased->intro_ua,
+                'intro_en' => $array['intro_en'] ?? $aliased->intro_en,
+                'order_num' => $array['order_num'],
+            ]);
+            if (isset($array['page_photo'])) {
+                $name = Page::saveImage("$page->id-" . time(), $array['page_photo']);
+                $page->page_photo_path = $name;
+            } else {
+                $page->page_photo_path = $aliased->page_photo_path;
+            }
+        } else {
+            $page = $container->sub_pages()->create([
+                'code' => $array['code'],
+                'caption_ua' => $array['caption_ua'],
+                'caption_en' => $array['caption_en'],
+                'intro_ua' => $array['intro_ua'],
+                'intro_en' => $array['intro_en'],
+                'content_ua' => $array['content_ua'],
+                'content_en' => $array['content_en'],
+                'order_num' => $array['order_num'],
+            ]);
+            if (isset($array['page_photo'])) {
+                $name = Page::saveImage("$page->id-" . time(), $array['page_photo']);
+                $page->page_photo_path = $name;
+            }
+            if ($array['page_type'] == 'container') {
+                $page->view_type = $array['view_type'];
+                $page->order_type = $array['order_type'];
+            }
         }
         debug('saved page');
         $page->save();
     }
 
     public static function updatePage($array, $current_code) {
-        $page = Page::firstWhere('code', $current_code);
-        $page->update([
-            'code' => $array['code'],
-            'caption_ua' => $array['caption_ua'],
-            'caption_en' => $array['caption_en'],
-            'intro_ua' => $array['intro_ua'],
-            'intro_en' => $array['intro_en'],
-            'content_ua' => $array['content_ua'],
-            'content_en' => $array['content_en'],
-            'order_num' => $array['order_num'],
-            'parent_id' => Page::firstWhere('code', $array['parent_code'])->id
-        ]);
-        if (isset($array['page_photo'])) {
-            if(isset($page->page_photo_path))
-                Page::deleteImage($page->page_photo_path);
-            $name = Page::saveImage("$page->id-".time(), $array['page_photo']);
-            $page->update(['page_photo_path' => $name]);
-        }
-        if ($array['page_type'] == 'container'){
-            $page->update(['view_type' => $array['view_type']]);
-            $page->update(['order_type' => $array['order_type']]);
+        if($array['page_type'] == 'alias') {
+            $page = Page::firstWhere('code', $current_code);
+            $aliased = Page::firstWhere('code', $array['code']);
+            $new_page_code = 'alias-'.(round(microtime(true))).'-'.$array['code'];
+            $page->update([
+                'code' => $new_page_code,
+                'alias_of' => $aliased->id,
+                'caption_ua' => $array['caption_ua'] ?? $aliased->caption_ua,
+                'caption_en' => $array['caption_en'] ?? $aliased->caption_en,
+                'intro_ua' => $array['intro_ua'] ?? $aliased->intro_ua,
+                'intro_en' => $array['intro_en'] ?? $aliased->intro_en,
+                'parent_id' => Page::firstWhere('code', $array['parent_code'])->id,
+                'order_num' => $array['order_num'],
+                'content_ua' => null,
+                'content_en' => null,
+                'view_type' => null,
+                'order_type' => null
+            ]);
+            if (isset($array['page_photo'])) {
+                if(isset($page->page_photo_path) && ($page->page_photo_path != $aliased->page_photo_path))
+                    Page::deleteImage($page->page_photo_path);
+                $name = Page::saveImage("$page->id-".time(), $array['page_photo']);
+                $page->update(['page_photo_path' => $name]);
+            } else if(!isset($page->page_photo_path)) {
+                $page->page_photo_path = $aliased->page_photo_path;
+            }
         } else {
-            $page->update(['view_type' => null]);
-            $page->update(['order_type' => null]);
+            $page = Page::firstWhere('code', $current_code);
+            $new_page_code = $array['code'];
+            $page->update([
+                'code' => $new_page_code,
+                'caption_ua' => $array['caption_ua'],
+                'caption_en' => $array['caption_en'],
+                'intro_ua' => $array['intro_ua'],
+                'intro_en' => $array['intro_en'],
+                'content_ua' => $array['content_ua'],
+                'content_en' => $array['content_en'],
+                'order_num' => $array['order_num'],
+                'parent_id' => Page::firstWhere('code', $array['parent_code'])->id,
+                'alias_of' => null
+            ]);
+            if (isset($array['page_photo'])) {
+                if(isset($page->page_photo_path))
+                    Page::deleteImage($page->page_photo_path);
+                $name = Page::saveImage("$page->id-".time(), $array['page_photo']);
+                $page->update(['page_photo_path' => $name]);
+            }
+            if ($array['page_type'] == 'container'){
+                $page->update(['view_type' => $array['view_type']]);
+                $page->update(['order_type' => $array['order_type']]);
+            } else {
+                $page->update(['view_type' => null]);
+                $page->update(['order_type' => null]);
+            }
         }
         debug('updated page');
+        return $new_page_code;
     }
 
-    public static function deletePage($code){
-        Page::firstWhere('code', $code)->delete();
+    public static function deletePage($code) {
+        $main_page = Page::firstWhere('code', $code);
+        sleep(2);
+        foreach ($main_page->aliases()->get() as $page) {
+            Page::deletePage($page->code);
+        }
+        if(is_null($main_page->alias_of_page()->first()))
+            Page::deleteImage($main_page->page_photo_path);
+        else if($main_page->page_photo_path != $main_page->alias_of_page()->first()->page_photo_path)
+            Page::deleteImage($main_page->page_photo_path);
+        $main_page->delete();
     }
 
     public static function saveImage($name, $base64){

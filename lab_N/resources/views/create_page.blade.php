@@ -5,6 +5,7 @@
 @section('scripts')
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+    <script defer src="{{ asset('js/general_admin.js') }}" type="text/javascript"></script>
     <script defer src="{{ asset('js/set_editors.js') }}" type="text/javascript"></script>
     <script defer src="{{ asset('js/create_page.js') }}" type="text/javascript"></script>
 @endsection
@@ -23,9 +24,13 @@
                     <input type="radio" id="publication" class="mdl-radio__button" name="page_type" value="publication" checked>
                     <span class="mdl-radio__label">Publication</span>
                 </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="container">
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="container">
                     <input type="radio" id="container" class="mdl-radio__button" name="page_type" value="container">
                     <span class="mdl-radio__label">Container</span>
+                </label>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="alias">
+                    <input type="radio" id="alias" class="mdl-radio__button" name="page_type" value="alias">
+                    <span class="mdl-radio__label">Alias</span>
                 </label>
             </div>
 
@@ -76,14 +81,16 @@
                 <label class="mdl-textfield__label" for="intro_en">Intro English</label>
             </div>
 
-            <h5>Контент Українською</h5>
-            <div id="editor_content_ua">
-                <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true"></div>
-            </div>
+            <div id="container_content">
+                <h5>Контент Українською</h5>
+                <div id="editor_content_ua">
+                    <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true"></div>
+                </div>
 
-            <h5>Content English</h5>
-            <div id="editor_content_en">
-                <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true"></div>
+                <h5>Content English</h5>
+                <div id="editor_content_en">
+                    <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true"></div>
+                </div>
             </div>
 
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-textfield--full-width">

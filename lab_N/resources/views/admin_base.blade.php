@@ -24,7 +24,7 @@
     <header class="mdl-layout__header mdl-layout__header--scroll mdl-shadow--2dp">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <a class="mdl-navigation__link" href="/home"><span class="mdl-layout-title">Lab03</span></a>
+            <a class="mdl-navigation__link" href="/home"><span class="mdl-layout-title">Lab04</span></a>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Search -->

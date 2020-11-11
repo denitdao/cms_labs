@@ -5,6 +5,7 @@
 @section('scripts')
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+    <script defer src="{{ asset('js/general_admin.js') }}" type="text/javascript"></script>
     <script defer src="{{ asset('js/set_editors.js') }}" type="text/javascript"></script>
     <script defer src="{{ asset('js/edit_page.js') }}" type="text/javascript"></script>
 @endsection
@@ -35,13 +36,19 @@
 
             <div id="page_settings">
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="publication">
-                    <input type="radio" id="publication" class="mdl-radio__button" name="page_type" value="publication" {{ ($view_type) ? "" : "checked" }}>
+                    <input type="radio" id="publication" class="mdl-radio__button" name="page_type" value="publication" {{ ($view_type && !$alias_of) ? "" : "checked" }}>
                     <span class="mdl-radio__label">Publication</span>
                 </label>
-                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="container">
-                    <input type="radio" id="container" class="mdl-radio__button" name="page_type" value="container" {{ ($view_type) ? "checked" : "" }}>
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" style="margin-right: 40px" for="container">
+                    <input type="radio" id="container" class="mdl-radio__button" name="page_type" value="container" {{ ($view_type && !$alias_of) ? "checked" : "" }}>
                     <span class="mdl-radio__label">Container</span>
                 </label>
+                @if($alias_of)
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="alias">
+                        <input type="radio" id="alias" class="mdl-radio__button" name="page_type" value="alias" checked>
+                        <span class="mdl-radio__label">Alias</span>
+                    </label>
+                @endif
             </div>
 
             <div id="container_settings">
@@ -91,18 +98,21 @@
                 <label class="mdl-textfield__label" for="intro_en">Intro English</label>
             </div>
 
-            <h5>Контент Українською</h5>
-            <div id="editor_content_ua">
-                <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true">{!! $content_ua !!}</div>
+            <div id="container_content">
+                <h5>Контент Українською</h5>
+                <div id="editor_content_ua">
+                    <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true">{!! $content_ua !!}</div>
+                </div>
+                <h5>Content English</h5>
+                <div id="editor_content_en">
+                    <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true">{!! $content_en !!}</div>
+                </div>
             </div>
 
-            <h5>Content English</h5>
-            <div id="editor_content_en">
-                <div class="ql-editor ql-blank" data-gramm="false" contenteditable="true">{!! $content_en !!}</div>
-            </div>
+            <input class="mdl-textfield__input" type="text" id="this_code" maxlength="160" value="{{ $code }}" hidden>
 
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label mdl-textfield--full-width">
-                <input class="mdl-textfield__input" type="text" id="code" maxlength="160" value="{{ $code }}">
+                <input class="mdl-textfield__input" type="text" id="code" maxlength="160" value="{{ \App\Models\Page::find($alias_of)->code ?? $code }}">
                 <label class="mdl-textfield__label" for="code">Унікальний код сторінки</label>
             </div>
 

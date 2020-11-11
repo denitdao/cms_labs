@@ -1,9 +1,8 @@
 $(document).ready(function (){
-    if($('[name = page_type]:checked').val() !== 'container') $('#container_settings').hide();
     var save_button = $('#save');
     var snackbar_container = document.querySelector('#snackbar');
 
-    let id = document.getElementById('code').value;
+    let id = document.getElementById('this_code').value;
     let input_code = document.getElementById('code');
     let input_caption_ua = document.getElementById('caption_ua');
     let input_caption_en = document.getElementById('caption_en');
@@ -15,12 +14,6 @@ $(document).ready(function (){
     let input_order_num = document.getElementById('order_num');
     var page_photo_base64 = null;
 
-    $('#container').on('change', function() {
-        $('#container_settings').show();
-    });
-    $('#publication').on('change', function() {
-        $('#container_settings').hide();
-    });
     $('#page_photo').on('change', function() {
         let reader = new FileReader();
         reader.onload = (e) => {
@@ -37,18 +30,8 @@ $(document).ready(function (){
 
         console.log('Updating:');
         console.log(page_type.val());
-        console.log(view_type.val());
-        console.log(order_type.val());
         console.log(input_code.value);
-        console.log(input_caption_ua.value);
-        console.log(input_caption_en.value);
-        console.log(textarea_intro_ua.value);
-        console.log(textarea_intro_en.value);
-        console.log(editor_content_ua.innerHTML);
-        console.log(editor_content_en.innerHTML);
         console.log(input_parent_code.value);
-        console.log(input_order_num.value);
-        console.log(page_photo_base64);
 
         $.ajax({
             type: "PUT",
@@ -75,7 +58,7 @@ $(document).ready(function (){
                     message: data.message,
                     timeout: 5000,
                     actionHandler: function (event) {
-                        window.location.href = '/' + data.code;
+                        window.location.href = '/' + data.parent;
                     },
                     actionText: 'View',
 
@@ -92,5 +75,4 @@ $(document).ready(function (){
         });
     });
 
-    autosize($('textarea'));
 });

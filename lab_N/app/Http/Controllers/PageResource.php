@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NonContainerAdminException;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\Page;
@@ -62,7 +63,11 @@ class PageResource extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function show($id) {
-        $data = Page::renderAdmin($id);
+        try {
+            $data = Page::renderAdmin($id);
+        } catch (NonContainerAdminException $e) {
+            return redirect()->route('page.edit', $e->getMessage());
+        }
         return view('index_page', $data);
     }
 
@@ -95,10 +100,10 @@ class PageResource extends Controller
                 'code' => 'error'
             ];
         } else {
-            Page::updatePage($request->all(), $id);
             $data = [
                 'message' => 'Page updated successfully',
-                'code' => $request->code
+                'code' => Page::updatePage($request->all(), $id),
+                'parent' => $request->parent_code
             ];
         }
         return response()->json($data);
@@ -118,7 +123,18 @@ class PageResource extends Controller
 //    METHODS FOR VALIDATION
 
     private function validateToCreate($input) {
-        return Validator::make($input, [
+        if($input['page_type'] == 'alias')
+            return Validator::make($input, [
+                'code' => 'bail|required|exists:pages,code',
+                'parent_code' => 'bail|required|exists:pages,code',
+                'caption_ua' => 'bail|nullable|max:100',
+                'caption_en' => 'bail|nullable|max:100',
+                'intro_ua' => 'bail|nullable|max:400',
+                'intro_en' => 'bail|nullable|max:400',
+                'order_num' => 'bail|nullable|integer',
+            ]);
+        else
+            return Validator::make($input, [
             'code' => 'bail|required|unique:pages|max:100',
             'parent_code' => 'bail|required|exists:pages,code',
             'caption_ua' => 'bail|required|max:100',
@@ -136,20 +152,31 @@ class PageResource extends Controller
     }
 
     private function validateToUpdate($input) {
-        return Validator::make($input, [
-//            'code' => 'bail|required|exists:pages|max:100',
-            'parent_code' => 'bail|required|exists:pages,code',
-            'caption_ua' => 'bail|required|max:100',
-            'caption_en' => 'bail|required|max:100',
-            'intro_ua' => 'bail|nullable|max:400',
-            'intro_en' => 'bail|nullable|max:400',
-            'content_ua' => 'bail|nullable|max:65534',
-            'content_en' => 'bail|nullable|max:65534',
-            'order_num' => 'bail|nullable|integer',
-            'page_type' => 'bail|required|in:container,publication',
-            'view_type' => 'bail|required|in:list,tiles',
-            'order_type' => 'bail|required|in:order_num_asc,date_desc'
-//            'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
-        ]);
+        if($input['page_type'] == 'alias')
+            return Validator::make($input, [
+                'code' => 'bail|required|exists:pages,code',
+                'parent_code' => 'bail|required|exists:pages,code',
+                'caption_ua' => 'bail|nullable|max:100',
+                'caption_en' => 'bail|nullable|max:100',
+                'intro_ua' => 'bail|nullable|max:400',
+                'intro_en' => 'bail|nullable|max:400',
+                'order_num' => 'bail|nullable|integer',
+            ]);
+        else
+            return Validator::make($input, [
+    //            'code' => 'bail|required|exists:pages|max:100',
+                'parent_code' => 'bail|required|exists:pages,code',
+                'caption_ua' => 'bail|required|max:100',
+                'caption_en' => 'bail|required|max:100',
+                'intro_ua' => 'bail|nullable|max:400',
+                'intro_en' => 'bail|nullable|max:400',
+                'content_ua' => 'bail|nullable|max:65534',
+                'content_en' => 'bail|nullable|max:65534',
+                'order_num' => 'bail|nullable|integer',
+                'page_type' => 'bail|required|in:container,publication',
+                'view_type' => 'bail|required|in:list,tiles',
+                'order_type' => 'bail|required|in:order_num_asc,date_desc'
+    //            'page_photo' => 'bail|nullable|image|mimes:jpeg,png,jpg,gif|max:4096'
+            ]);
     }
 }

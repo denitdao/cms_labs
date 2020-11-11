@@ -24,7 +24,7 @@
     <header class="mdl-layout__header mdl-layout__header--scroll mdl-shadow--2dp">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <a class="mdl-navigation__link" href="/home"><span class="mdl-layout-title">Lab03</span></a>
+            <a class="mdl-navigation__link" href="/home"><span class="mdl-layout-title">Lab04</span></a>
             <!-- Add spacer, to align navigation to the right -->
             <div class="mdl-layout-spacer"></div>
             <!-- Search -->
@@ -52,7 +52,7 @@
                     @else
                         <li class="mdl-menu__item"><a class="mdl-menu__item" href="{{ $path }}/en">English</a></li>
                     @endif
-                    <li class="mdl-menu__item"><a class="mdl-menu__item" href="/page">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a></li>
+                    <li class="mdl-menu__item"><a class="mdl-menu__item" href="/page{{ $path }}">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a></li>
                     <li class="mdl-menu__item"><a class="mdl-menu__item" href="#{{-- route('login') --}}">{{ $lang == 'ua' ? 'Увійти' : 'Login' }}</a></li>
                 </ul>
             </nav>
@@ -62,7 +62,7 @@
     <div class="mdl-layout__drawer mdl-layout--small-screen-only">
         <span class="mdl-layout-title">{{ $lang == 'ua' ? 'Меню' : 'Menu' }}</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/page">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a>
+            <a class="mdl-navigation__link" href="/page{{ $path }}">{{ $lang == 'ua' ? 'Адміністрування' : 'Admin' }}</a>
             @if($lang == 'en')
                 <a class="mdl-navigation__link" href="{{ $path }}">Українська</a>
             @else
