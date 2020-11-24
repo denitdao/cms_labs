@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use App\Exceptions\NonContainerAdminException;
+use App\Http\Traits\ImageProcessTrait;
+use App\Http\Traits\MacroEncoderTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class Page extends Model
 {
     use HasFactory;
-
+    use ImageProcessTrait;
+    use MacroEncoderTrait;
 //    DB SETTINGS
 
     protected $fillable = [ 'code', 'caption_ua', 'caption_en', 'intro_ua', 'intro_en', 'content_ua', 'content_en',
@@ -39,8 +40,10 @@ class Page extends Model
         $data = Page::getPage($page);
         if($lang == 'en'){
             $data['lang'] = 'en';
+            $data->content_en = Page::macroEncodeEn($data->content_en);
         } else {
             $data['lang'] = 'ua';
+            $data->content_ua = Page::macroEncodeUa($data->content_ua);
         }
         return $data;
     }
@@ -51,6 +54,12 @@ class Page extends Model
             throw new NonContainerAdminException($code);
         $data['containers'] = Page::getAllContainers($code);
         $data['items'] = Page::getAllPosts($code);
+        $data['lang'] = 'ua';
+        return $data;
+    }
+
+    public static function renderEdit($code){
+        $data = Page::getPage($code);
         $data['lang'] = 'ua';
         return $data;
     }
@@ -166,7 +175,6 @@ class Page extends Model
                 $page->order_type = $array['order_type'];
             }
         }
-        debug('saved page');
         $page->save();
     }
 
@@ -226,7 +234,6 @@ class Page extends Model
                 $page->update(['order_type' => null]);
             }
         }
-        debug('updated page');
         return $new_page_code;
     }
 
@@ -243,17 +250,4 @@ class Page extends Model
         $main_page->delete();
     }
 
-    public static function saveImage($name, $base64){
-        list($type, $data) = explode(';', $base64);
-        list(, $type)      = explode('/', $type);
-        list(, $data)      = explode(',', $data);
-        $full_name = $name.'.'.strtolower($type);
-        debug($type);
-        Storage::disk('images')->put($full_name, base64_decode($data));
-        return $full_name;
-    }
-
-    public static function deleteImage($name){
-        Storage::disk('images')->delete($name);
-    }
 }
